@@ -61,6 +61,7 @@ class CommonHelper
     {
         $users = BotUsersSearch::findAll(['gender' => 'f', 'current_partner_id' => null]);
         foreach ($users as $user) {
+            Yii::$app->language = $user->lang;
             $gender = $user->gender == 'm' ? 'f' : 'm';
             $blockedUsers = BlockedUsers::find()->select('blocked_chat_id')->andWhere(['chat_id' => $user->chat_id])->column();
             $partner = NewChats::find()

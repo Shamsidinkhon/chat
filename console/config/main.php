@@ -30,6 +30,19 @@ return [
                 ],
             ],
         ],
+        'i18n' => [
+            'translations' => [
+                'main*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@frontend/messages',
+                    //'sourceLanguage' => 'en-US',
+                    'fileMap' => [
+                        'main' => 'main.php',
+                        'main/error' => 'error.php',
+                    ],
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
