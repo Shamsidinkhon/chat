@@ -19,7 +19,7 @@ class TelegramBot extends Telegram
             if(in_array($command, ['Female', 'Male']))
                 $this->executeCommand('Chat');
         }
-        if(!$this->update->getMessage()->getCommand() && !$skip){
+        if($this->update->getMessage() && !$this->update->getMessage()->getCommand() && !$skip){
             $this->executeCommand('SendTextToUser');
         }
     }

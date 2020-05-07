@@ -29,7 +29,7 @@ class CommonHelper
             'Заблокировать собеседника' => 'BlockUser',
             'Suhbatdoshni bloklash' => 'BlockUser',
         ];
-        if (isset($commands[$update->getMessage()->getText()])) {
+        if ($update->getMessage() && isset($commands[$update->getMessage()->getText()])) {
             return $commands[$update->getMessage()->getText()];
         }
         return null;
