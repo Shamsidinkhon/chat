@@ -97,9 +97,34 @@ class CommonHelper
     {
         $user = BotUsersSearch::findOne(['chat_id' => $from]);
 
+        if($user->current_partner_id){
+            $model = BotUsersSearch::findOne(['chat_id' => $user->current_partner_id]);
+            if($model){
+                $model->current_partner_id = null;
+                $model->save();
+                $data = [                                  // Set up the new message data
+                    'chat_id' => $model->chat_id,                 // Set Chat ID to send the message to
+                    'text' =>  Yii::t('main', 'Your conversation partner has left'),
+                ];
+                Request::sendMessage($data);
+            }
+        }
+
         Yii::$app->language = $user->lang;
         $partner = BotUsersSearch::findOne(['chat_id' => $to]);
         if ($partner) {
+            if($partner->current_partner_id){
+                $model = BotUsersSearch::findOne(['chat_id' => $partner->current_partner_id]);
+                if($model){
+                    $model->current_partner_id = null;
+                    $model->save();
+                    $data = [                                  // Set up the new message data
+                        'chat_id' => $model->chat_id,                 // Set Chat ID to send the message to
+                        'text' =>  Yii::t('main', 'Your conversation partner has left'),
+                    ];
+                    Request::sendMessage($data);
+                }
+            }
             $user->current_partner_id = $partner->chat_id;
             $pUser = BotUsersSearch::findOne(['chat_id' => $user->current_partner_id]);
             $pUser->current_partner_id = $user->chat_id;
