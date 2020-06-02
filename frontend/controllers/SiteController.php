@@ -1,8 +1,11 @@
 <?php
 namespace frontend\controllers;
 
+use common\botHelpers\CommonHelper;
+use common\components\TelegramBot;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
+use Longman\TelegramBot\Exception\TelegramException;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -31,7 +34,7 @@ class SiteController extends Controller
                 'only' => ['logout', 'signup'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['signup', 'match-user'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -256,5 +259,21 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    public function actionMatchUser($from, $to)
+    {
+        try {
+            $params = Yii::$app->params['bot'];
+            $telegram = new TelegramBot($params['bot_api_key'], $params['bot_username']);
+            CommonHelper::matchUser($from, $to);
+        } catch (TelegramException $e) {
+            set_error_handler('var_dump', 0); // Never called because of empty mask.
+            @trigger_error("");
+            restore_error_handler();
+            // log telegram errors
+            echo $e->getMessage();
+        }
+        return 'Done';
     }
 }
