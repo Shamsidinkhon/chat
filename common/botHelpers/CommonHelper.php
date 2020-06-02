@@ -60,6 +60,7 @@ class CommonHelper
     public static function matchUsers()
     {
         $users = BotUsersSearch::findAll(['gender' => 'f', 'current_partner_id' => null]);
+		
         foreach ($users as $user) {
             Yii::$app->language = $user->lang;
             $gender = $user->gender == 'm' ? 'f' : 'm';
@@ -86,8 +87,9 @@ class CommonHelper
                 'text' => Yii::t('main', 'New conversation partner'),
             ];
 
-            return Request::sendMessage($data);        // Send message!
+            Request::sendMessage($data);        // Send message!
         }
+		
         return count($users);
     }
 
