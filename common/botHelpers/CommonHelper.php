@@ -90,4 +90,30 @@ class CommonHelper
         }
         return count($users);
     }
+
+    public static function matchUser($from, $to)
+    {
+        $user = BotUsersSearch::findOne(['chat_id' => $from]);
+
+        Yii::$app->language = $user->lang;
+        $partner = BotUsersSearch::findOne(['chat_id' => $to]);
+        if ($partner) {
+            $user->current_partner_id = $partner->chat_id;
+            $pUser = BotUsersSearch::findOne(['chat_id' => $user->current_partner_id]);
+            $pUser->current_partner_id = $user->chat_id;
+            $pUser->save();
+            $data = [                                  // Set up the new message data
+                'chat_id' => $pUser->chat_id,                 // Set Chat ID to send the message to
+                'text' => Yii::t('main', 'New conversation partner'),
+            ];
+            Request::sendMessage($data);
+        }
+        $user->save();
+        $data = [                                  // Set up the new message data
+            'chat_id' => $user->chat_id,                 // Set Chat ID to send the message to
+            'text' => Yii::t('main', 'New conversation partner'),
+        ];
+
+        return Request::sendMessage($data);        // Send message!
+    }
 }
